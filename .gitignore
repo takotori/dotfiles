@@ -1,5 +1,12 @@
-/nvim/plugged/*
 gtk-3.0/bookmarks
 gtk-3.0/servers
 /fish/fish_variables
 fish/fish_variables
+nvim/tt.*
+nvim/.tests
+nvim/doc/tags
+nvim/debug
+nvim/.repro
+nvim/foo.*
+nvim/*.log
+nvim/data
