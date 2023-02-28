@@ -1,0 +1,105 @@
+
+* {
+  /* `otf-font-awesome` is required to be installed for icons */
+  font-family: FiraCode;
+  font-size: 14px;
+}
+
+window#waybar {
+  background-color: transparent;
+  transition-property: background-color;
+  transition-duration: 0.5s;
+}
+
+window#waybar.hidden {
+  opacity: 0.2;
+}
+
+.modules-right,
+.modules-left,
+.modules-center {
+  margin: 2px;
+  margin-bottom: 0;
+}
+
+/********************************
+ * Workspace indocator styles
+ ********************************/
+
+#workspaces button {
+  padding: 0 10px;
+  border-radius: 5em / 5em;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0 2px;
+  font-weight: bold;
+  transition-property: padding;
+  transition-duration: 150ms;
+}
+
+#workspaces button.active {
+  padding: 0 24px;
+  color: rgba(255, 255, 255, 1);
+}
+#workspaces button.urgent {
+  color: rgba(200, 0, 0, 1);
+}
+
+/********************************
+ * Status indicator styles
+ ********************************/
+.modules-right label {
+  padding: 0 10px;
+  border-radius: 5em / 5em;
+}
+.modules-right {
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 5em 5em;
+}
+
+#clock,
+#battery,
+#cpu,
+#memory,
+#temperature,
+#network,
+#pulseaudio,
+#keyboard-state,
+#mpd {
+  color: rgb(255, 185, 129);
+  font-weight: bold;
+}
+
+#cpu,
+#clock {
+  color: #89dceb;
+}
+
+#pulseaudio {
+  color: #d77ae9;
+}
+
+#pulseaudio.muted {
+  color: rgb(245, 66, 66);
+}
+
+#battery.critical,
+#network.disconnected,
+#temperature.critical {
+  background-color: rgba(200, 0, 0, 0.8);
+  animation-name: critical-blink;
+  animation-duration: 500ms;
+  animation-timing-function: ease-in-out;
+  animation-direction: alternate;
+  animation-iteration-count: 16;
+}
+
+#temperature {
+  color: #a6f7ba;
+}
+
+@keyframes critical-blink {
+  to {
+    background-color: rgba(200, 0, 0, 0.4);
+  }
+}
