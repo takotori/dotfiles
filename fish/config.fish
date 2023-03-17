@@ -15,15 +15,12 @@ function sudo --description "Replacement for Bash 'sudo !!' command to run last 
     end
 end
 alias ls='lsd'
-alias :q='exit'
+
 alias gh='git push origin'
 alias gl='git pull origin'
-alias gm='git commit -m'
+alias gc='git commit -m'
 alias ga="git add -A"
-alias g+='bear -- g++ -Wextra -Werror -std=c++20'
-alias s="kitty +kitten ssh"
 alias zl='z "" '
-alias jo='joshuto'
 
 # pwd based on the value of _ZO_RESOLVE_SYMLINKS.
 function __zoxide_pwd
