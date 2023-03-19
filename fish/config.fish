@@ -20,6 +20,7 @@ alias gh='git push origin'
 alias gl='git pull origin'
 alias gc='git commit -m'
 alias ga="git add -A"
+alias gf='git fetch'
 alias zl='z "" '
 
 # pwd based on the value of _ZO_RESOLVE_SYMLINKS.
