@@ -19,6 +19,7 @@ alias ls='lsd'
 alias gh='git push origin'
 alias gl='git pull origin'
 alias gc='git commit -m'
+alias gco='git checkout'
 alias ga="git add -A"
 alias gf='git fetch'
 alias zl='z "" '
