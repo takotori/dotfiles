@@ -22,6 +22,7 @@ alias gc='git commit -m'
 alias gco='git checkout'
 alias ga="git add -A"
 alias gf='git fetch'
+alias gs='git status'
 alias zl='z "" '
 
 # pwd based on the value of _ZO_RESOLVE_SYMLINKS.
