@@ -1,38 +1,121 @@
-(defwindow powermenu
-  :stacking "fg"
-  :windowtype "normal"
-  :wm-ignore true
+(defpoll time :interval "1s" "date '+%H:%M:%S'")
+(defpoll date :interval "1h" "date '+%a %d.%m.%y'")
+(defpoll day :interval "20h" "date '+%d'")
+(defpoll year :interval "20h" "date '+%Y'")
+
+(defvar eww "$HOME/.local/bin/eww -c $HOME/.config/eww")
+(defvar time_rev false)
+
+(defwidget bar []
+  (centerbox :orientation "h"
+    (music)
+    (workspaces)
+    (sidestuff)))
+
+(defwidget sidestuff []
+  (box :class "sidestuff" :orientation "h" :space-evenly false :halign "end"
+    (metric :label "🔊"
+            :value volume
+            :onchange "amixer -D pulse sset Master {}%")
+    (metric :label ""
+            :value {EWW_RAM.used_mem_perc}
+            :onchange "")
+    (metric :label "💾"
+            :value {round((1 - (EWW_DISK["/"].free / EWW_DISK["/"].total)) * 100, 0)}
+            :onchange "")
+    (clock)))
+
+
+
+(defwidget clock []
+  (eventbox 
+    :onhover "${eww} update time_rev=true"
+    :onhoverlost "${eww} update time_rev=false"
+    (button
+      :onclick "scripts/pop calendar"
+       (box
+        :class "module"
+        :space-evenly false
+        :orientation "h"
+        :spacing 3
+        (label :text time)
+        (revealer 
+          :transition "slideleft" 
+          :reveal time_rev 
+          :duration "350ms" 
+          date)))))
+
+(defwidget cal []
+	(box :class "cal" :orientation "v"
+	  (box :class "cal-in"
+	    (calendar 
+        :class "cal" 
+		    :day day 
+		    :year year))))
+
+(defwindow calendar
   :monitor 1
-  :geometry (geometry
-              :width "100%"
-              :height "100%")
-  (powermenu_layout))
+	:geometry (
+    geometry  :x "-20px" 
+						  :y "7%" 
+              :anchor "top right"
+						  :width "270px" 
+						  :height "60px")
+  (cal))
 
-(defpoll time :interval "5s"
-  :initial `date +'{"hour":"%H","min":"%M"}'`
-  `date +'{"hour":"%H","min":"%M"}'`)
 
-(defwidget _buttons [shutdown shutdown_icon reboot
-                    reboot_icon logout logout_icon]
-  (box :class "btns-box" :spacing 5
-       :vexpand true :hexpand true
-       :valign "end" :halign "end"
+
+(defwidget workspaces []
+  (box :class "workspaces"
+       :orientation "h"
+       :space-evenly true
+       :halign "center"
+       :spacing 10
+    (button :onclick "wmctrl -s 0" 1)
+    (button :onclick "wmctrl -s 1" 2)
+    (button :onclick "wmctrl -s 2" 3)
+    (button :onclick "wmctrl -s 3" 4)
+    (button :onclick "wmctrl -s 4" 5)
+    (button :onclick "wmctrl -s 5" 6)
+    (button :onclick "wmctrl -s 6" 7)
+    (button :onclick "wmctrl -s 7" 8)
+    (button :onclick "wmctrl -s 8" 9)))
+
+(defwidget music []
+  (box :class "music"
+       :orientation "h"
        :space-evenly false
-    (button :onclick shutdown shutdown_icon)
-    (button :onclick reboot reboot_icon)
-    (button :onclick logout logout_icon)))
+       :halign "start"
+    {music != "" ? "🎵${music}" : ""}))
 
-(defwidget powermenu_layout []
-  (box :class "layout-box" :space-evenly false :orientation "vertical"
-       :style "background-image: url('./wallpaper')"
-    (box :valign "start" :space-evenly false :spacing 25
-      (label :text "|" :class "sep")
-      (button :onclick "eww close powermenu" :class "close-btn" ""))
-    (box :space-evenly false :hexpand true :vexpand true
-      (box :spacing 15 :class "tm-box" :space-evenly false :valign "end"
-           :halign "start"
-        (label :text "")
-        (label :text "${time.hour}  ${time.min}"))
-      (_buttons :shutdown "poweroff" :reboot "reboot"
-                :logout "loginctl kill-session self"
-                :shutdown_icon "" :reboot_icon "" :logout_icon ""))))
+(defwidget metric [label value onchange]
+  (box :orientation "h"
+       :class "metric"
+       :space-evenly false
+    (box :class "label" label)
+    (scale :min 0
+           :max 101
+           :active {onchange != ""}
+           :value value
+           :onchange onchange)))
+
+
+(deflisten music :initial ""
+  "playerctl --follow metadata --format '{{ artist }} - {{ title }}' || true")
+
+(defpoll volume :interval "1s"
+  "scripts/getvol")
+
+(defwindow bar
+  :monitor 1
+  :windowtype "toolbar"
+  :exclusive true
+  :geometry (
+    geometry  :x "0%"
+              :y "0%"
+              :width "100%"
+              :height "32px"
+              :anchor "top center")
+  :reserve (struts :side "top" :distance "4%")
+  (bar))
+
