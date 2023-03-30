@@ -47,14 +47,13 @@
   margin-left: 10px;
   margin-right: 20px;
 }
-.label-ram {
-  font-size: large;
-}
+
 .workspaces button:hover {
   color: #D35D6E;
 }
 
 
+// Calendar
 .cal {
   background-color: #0f0f17;
   font-family: JetBrainsMono Nerd Font;
@@ -98,4 +97,10 @@ calendar.highlight {
 
 calendar:indeterminate {
   color: #bfc9db;
+}
+
+// Workspaces
+.workspace {
+  color: #fff;
+  font-size: 22px;
 }

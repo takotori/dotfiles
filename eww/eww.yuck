@@ -1,10 +1,12 @@
 (defpoll time :interval "1s" "date '+%H:%M:%S'")
-(defpoll date :interval "1h" "date '+%a %d.%m.%y'")
+(defpoll date :interval "1h" "date '+%a %d.%m'")
 (defpoll day :interval "20h" "date '+%d'")
 (defpoll year :interval "20h" "date '+%Y'")
 
 (defvar eww "$HOME/.local/bin/eww -c $HOME/.config/eww")
 (defvar time_rev false)
+
+(deflisten workspace "scripts/workspace")
 
 (defwidget bar []
   (centerbox :orientation "h"
@@ -20,14 +22,6 @@
       :label "🔊"
       :value volume
       :onchange "amixer -D pulse sset Master {}%")
-    (metric 
-      :label ""
-      :value {EWW_RAM.used_mem_perc}
-      :onchange "")
-    (metric
-      :label "💾"
-      :value {round((1 - (EWW_DISK["/"].free / EWW_DISK["/"].total)) * 100, 0)}
-      :onchange "")
     (clock)
   )
 )
@@ -64,34 +58,30 @@
 	    (calendar 
         :class "cal" 
 		    :day day 
-		    :year year))))
+		    :year year
+      )
+    )
+  )
+)
 
 (defwindow calendar
   :monitor 1
 	:geometry (
-    geometry  :x "-20px" 
-						  :y "7%" 
+    geometry  :x "10px" 
+						  :y "10px" 
               :anchor "top right"
 						  :width "270px" 
 						  :height "60px")
-  (cal))
+  (cal)
+)
 
 (defwidget workspaces []
-  (box
-    :class "workspaces"
+  (box 
     :orientation "h"
-    :space-evenly true
-    :halign "center"
-    :spacing 10
-    (button :onclick "wmctrl -s 0" 1)
-    (button :onclick "wmctrl -s 1" 2)
-    (button :onclick "wmctrl -s 2" 3)
-    (button :onclick "wmctrl -s 3" 4)
-    (button :onclick "wmctrl -s 4" 5)
-    (button :onclick "wmctrl -s 5" 6)
-    (button :onclick "wmctrl -s 6" 7)
-    (button :onclick "wmctrl -s 7" 8)
-    (button :onclick "wmctrl -s 8" 9)
+    :space-evenly false
+    :halign "start"
+    :class "workspace"
+    (literal :content workspace)
   )
 )
 
