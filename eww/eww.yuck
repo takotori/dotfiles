@@ -10,22 +10,27 @@
   (centerbox :orientation "h"
     (music)
     (workspaces)
-    (sidestuff)))
+    (sidestuff)
+  )
+)
 
 (defwidget sidestuff []
   (box :class "sidestuff" :orientation "h" :space-evenly false :halign "end"
-    (metric :label "🔊"
-            :value volume
-            :onchange "amixer -D pulse sset Master {}%")
-    (metric :label ""
-            :value {EWW_RAM.used_mem_perc}
-            :onchange "")
-    (metric :label "💾"
-            :value {round((1 - (EWW_DISK["/"].free / EWW_DISK["/"].total)) * 100, 0)}
-            :onchange "")
-    (clock)))
-
-
+    (metric 
+      :label "🔊"
+      :value volume
+      :onchange "amixer -D pulse sset Master {}%")
+    (metric 
+      :label ""
+      :value {EWW_RAM.used_mem_perc}
+      :onchange "")
+    (metric
+      :label "💾"
+      :value {round((1 - (EWW_DISK["/"].free / EWW_DISK["/"].total)) * 100, 0)}
+      :onchange "")
+    (clock)
+  )
+)
 
 (defwidget clock []
   (eventbox 
@@ -33,7 +38,7 @@
     :onhoverlost "${eww} update time_rev=false"
     (button
       :onclick "scripts/pop calendar"
-       (box
+      (box
         :class "module"
         :space-evenly false
         :orientation "h"
@@ -43,11 +48,19 @@
           :transition "slideleft" 
           :reveal time_rev 
           :duration "350ms" 
-          date)))))
+          date
+        )
+      )
+    )
+  )
+)
 
 (defwidget cal []
-	(box :class "cal" :orientation "v"
-	  (box :class "cal-in"
+	(box 
+    :class "cal" 
+    :orientation "v"
+	  (box 
+      :class "cal-in"
 	    (calendar 
         :class "cal" 
 		    :day day 
@@ -63,14 +76,13 @@
 						  :height "60px")
   (cal))
 
-
-
 (defwidget workspaces []
-  (box :class "workspaces"
-       :orientation "h"
-       :space-evenly true
-       :halign "center"
-       :spacing 10
+  (box
+    :class "workspaces"
+    :orientation "h"
+    :space-evenly true
+    :halign "center"
+    :spacing 10
     (button :onclick "wmctrl -s 0" 1)
     (button :onclick "wmctrl -s 1" 2)
     (button :onclick "wmctrl -s 2" 3)
@@ -79,25 +91,30 @@
     (button :onclick "wmctrl -s 5" 6)
     (button :onclick "wmctrl -s 6" 7)
     (button :onclick "wmctrl -s 7" 8)
-    (button :onclick "wmctrl -s 8" 9)))
+    (button :onclick "wmctrl -s 8" 9)
+  )
+)
 
 (defwidget music []
-  (box :class "music"
-       :orientation "h"
-       :space-evenly false
-       :halign "start"
+  (box 
+    :class "music"
+    :orientation "h"
+    :space-evenly false
+    :halign "start"
     {music != "" ? "🎵${music}" : ""}))
 
 (defwidget metric [label value onchange]
-  (box :orientation "h"
-       :class "metric"
-       :space-evenly false
+  (box 
+    :orientation "h"
+    :class "metric"
+    :space-evenly false
     (box :class "label" label)
-    (scale :min 0
-           :max 101
-           :active {onchange != ""}
-           :value value
-           :onchange onchange)))
+    (scale 
+      :min 0
+      :max 101
+      :active {onchange != ""}
+      :value value
+      :onchange onchange)))
 
 
 (deflisten music :initial ""
