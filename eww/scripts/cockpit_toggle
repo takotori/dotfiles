@@ -1,0 +1,9 @@
+#! /bin/bash
+
+ISOPEN=$(eww windows | grep "*dashboard" | tr -d '*')
+
+if [ "$ISOPEN" = "" ]; then
+	eww open dashboard
+else
+	eww close "$ISOPEN"
+fi

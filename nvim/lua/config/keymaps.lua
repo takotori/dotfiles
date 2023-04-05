@@ -19,8 +19,9 @@ local function map(mode, lhs, rhs, opts)
 end
 
 local opts = { noremap = true, silent = true }
-
 local term_opts = { silent = true }
+
+map("n", "f", "/", term_opts)
 
 map("n", "<leader>gg", function()
   Util.float_term({ "gitui" }, { cwd = Util.get_root() })

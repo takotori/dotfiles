@@ -124,5 +124,49 @@
               :height "32px"
               :anchor "top center")
   :reserve (struts :side "top" :distance "4%")
-  (bar))
+  (bar)
+)
 
+;;;;;;;;;;;;;;;;;;;;;Dashboard;;;;;;;;;;;;;;;;;;;;;
+
+;Music vars
+(defpoll SONG :interval "1s" `scripts/music_info --song`)
+(defpoll ARTIST :interval "1s" `scripts/music_info --artist`)
+(defpoll STATUS :interval "1s" `scripts/music_info --status`)
+(defpoll CURRENT :interval "1s" `scripts/music_info --time`)
+(defpoll COVER :interval "1s" `scripts/music_info --cover`)
+(defpoll CTIME :interval "1s" `scripts/music_info --ctime`)
+(defpoll TTIME :interval "1s" `scripts/music_info --ttime`)
+
+(defwindow dashboard 
+  :monitor 1
+  :stacking "overlay"
+	:wm-ignore false
+  :exclusive true
+  :geometry (
+    geometry  :x "1470px"
+              :y "420px"
+              :width "1200px"
+              :height "800px"
+              :anchor "center")
+  (dashboard)
+)
+
+(defwidget dashboard []
+  (box 
+    :orientation "h"
+    :class "cockpit"
+    (box
+      :orientation "v"
+      (box
+        :class "profile"
+        "profile")
+      (box
+        :class "spotify"
+        "spotify"))
+    (box
+      ))
+)
+
+;(defwidget music []
+;  )
