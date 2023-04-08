@@ -24,6 +24,7 @@ alias ga="git add -A"
 alias gf='git fetch'
 alias gs='git status'
 alias zl='z "" '
+alias n='neovide --novsync'
 
 # pwd based on the value of _ZO_RESOLVE_SYMLINKS.
 function __zoxide_pwd

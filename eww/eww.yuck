@@ -154,10 +154,8 @@
 
 (defwidget dashboard []
   (box 
-    :orientation "h"
-    :class "cockpit"
+    :class "dashboard"
     (box
-      :orientation "v"
       (box
         :class "profile"
         "profile")

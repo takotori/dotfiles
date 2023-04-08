@@ -9,3 +9,4 @@ nvim/.repro
 nvim/foo.*
 nvim/*.log
 nvim/data
+nvim/lazy-lock.json
