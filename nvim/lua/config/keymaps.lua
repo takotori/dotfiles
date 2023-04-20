@@ -53,3 +53,19 @@ end, { desc = "gitui (root dir)" })
 map("n", "<leader>gG", function()
   Util.float_term({ "gitui" })
 end, { desc = "gitui (cwd)" })
+
+-- better yank
+function Better_yank(opts)
+  local current_line = unpack(vim.api.nvim_win_get_cursor(0))
+  vim.api.nvim_command(current_line .. "," .. (opts.count - (current_line - 1)) .. "y")
+end
+vim.api.nvim_create_user_command("BetterYank", Better_yank, { count = 1 })
+map("n", "cc", ":BetterYank<CR>", term_opts) -- better delete
+
+function Better_delete(opts)
+  local current_line = unpack(vim.api.nvim_win_get_cursor(0))
+  vim.api.nvim_command(current_line .. "," .. (opts.count - (current_line - 1)) .. "d")
+end
+vim.api.nvim_create_user_command("BetterDelete", Better_delete, { count = 1 })
+
+map("n", "<leader>d", ":BetterDelete<CR>", term_opts)
