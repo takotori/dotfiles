@@ -1,37 +1,8 @@
 -- Autocmds are automatically loaded on the VeryLazy event
 -- Default autocmds that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/autocmds.lua
 -- Add any additional autocmds here
--- local function augroup(name)
---   return vim.api.nvim_create_augroup("lazyvim_" .. name, { clear = true })
--- end
--- vim.api.nvim_create_autocmd("TextYankPost", {
--- 	group = augroup("toggle_relative_group"),
--- 	callback = function(_)
--- 		vim.cmd("set norelativenumber")
--- 	end,
--- })
+
 -- nvim-tree is also there in modified buffers so this function filter it out
-
-vim.api.nvim_create_autocmd("LspAttach", {
-  callback = function(ev)
-    local client = vim.lsp.get_client_by_id(ev.data.client_id)
-    local function toSnakeCase(str)
-      return string.gsub(str, "%s*[- ]%s*", "_")
-    end
-
-    if client.name == "omnisharp" then
-      local tokenModifiers = client.server_capabilities.semanticTokensProvider.legend.tokenModifiers
-      for i, v in ipairs(tokenModifiers) do
-        tokenModifiers[i] = toSnakeCase(v)
-      end
-      local tokenTypes = client.server_capabilities.semanticTokensProvider.legend.tokenTypes
-      for i, v in ipairs(tokenTypes) do
-        tokenTypes[i] = toSnakeCase(v)
-      end
-    end
-  end,
-})
-
 local modifiedBufs = function(bufs)
   local t = 0
   for k, v in pairs(bufs) do

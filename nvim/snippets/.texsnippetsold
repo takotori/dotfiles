@@ -1,0 +1,55 @@
+
+snippet mini \minipg{}{}[]
+	\\minipg{
+	$1
+	}
+	{${2}}[${3}]
+
+snippet graphics \includegraphics[]{}
+	\\includegraphics[scale=$1]{${2}}
+
+snippet code "code"
+	\\begin{lstlisting}
+	$1
+	\\end{lstlisting}
+
+snippet list "list" 
+	\\begin{itemize}
+	\\item \\textcolor{${1}}{${2}}
+	\\item \\textcolor{${1}}{${3}}
+	\\item \\textcolor{${1}}{${4}}
+	\\item \\textcolor{${1}}{${5}}
+	\\vspace{-3mm}
+	\\end{itemize}
+
+snippet enum "enumerate"
+	\\begin{enumerate}
+	\\item \textcolor{${1}}{${2}}
+	\\item \textcolor{${1}}{${3}}
+	\\item \textcolor{${1}}{${4}}
+	\\item \textcolor{${1}}{${5}}
+	\\vspace{-3mm}
+	\\end{enumerate}
+
+snippet table "table"
+	\\begin{table}[ht!]
+	\\section{${1}}
+	\\begin{tabular}{|m{0.2\linewidth}|m{0.755\linewidth}|}
+	\hline
+	$2
+	\hline
+	\\end{tabular}
+	\\end{table}
+
+snippet tabular "tabular"
+	\\begin{tabular}{|m{0.2\linewidth}|m{0.755\linewidth}|}
+	\hline
+	$1
+	\hline
+	\\end{tabular}
+
+snippet tx "textcolor"
+	\\textcolor{${1}}{${2}}
+
+snippet bm "vectormatrix"
+	\\begin{bmatrix} $1 \\ $2 \\ $3 \end{bmatrix}

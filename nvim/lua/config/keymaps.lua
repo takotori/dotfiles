@@ -1,71 +1,191 @@
--- Keymaps are automatically loaded on the VeryLazy event
--- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
--- Add any additional keymaps here
--- gitui
+local Util = require("lazyvim.util")
+
 local function map(mode, lhs, rhs, opts)
   local keys = require("lazy.core.handler").handlers.keys
-
   ---@cast keys LazyKeysHandler
-
   -- do not create the map if a lazy keys handler exists
-
   if not keys.active[keys.parse({ lhs, mode = mode }).id] then
     opts = opts or {}
-
     opts.silent = opts.silent ~= false
-
     vim.keymap.set(mode, lhs, rhs, opts)
   end
 end
-
 local opts = { noremap = true, silent = true }
 local term_opts = { silent = true }
 
--- general
-map("n", "q", ":q <CR>", opts)
-map("n", "w", ":w <CR>", opts)
-map("n", "r", "<C-r>", opts)
+-- crimes against humanity, but I don't care
+map("n", "j", "h", opts)
+map("n", "l", "k", opts)
+map("n", "k", "j", opts)
+map("n", ";", "l", opts)
+map("v", "j", "h", opts)
+map("v", "k", "j", opts)
+map("v", "l", "k", opts)
+map("v", ";", "l", opts)
 
--- code
-map("n", "<leader>d", ":Telescope lsp_definitions<CR>", { desc = "Jump to definition" })
-map("n", "<leader>u", ":Telescope lsp_references<CR>", { desc = "Jump to usage" })
-map("n", "<leader>r", ":lua vim.lsp.buf.rename()<CR>", { desc = "Rename all" })
+-- debug
+map("n", "<leader>db", ':lua require("dap").toggle_breakpoint()<CR>', { desc = "Toggle breakpoint" })
+map("n", "<leader>do", ':lua require("dap").step_over()<CR>', { desc = "Step over" })
+map("n", "<leader>di", ':lua require("dap").step_into()<CR>', { desc = "Step into" })
+map("n", "<leader>dc", ':lua require("dap").continue()<CR>', { desc = "Continue" })
+map("n", "<leader>dt", ':lua require("dapui").toggle()<CR> :lua require("dap").continue()<CR> ', { desc = "Open DAP" })
+map("n", "<leader>dq", ':lua require("dap").close()<CR> :lua require("dapui").toggle()<CR>', { desc = "Close DAP" })
 
 -- file tree
-map("n", "t", ":lua require('nvim-tree.api').tree.toggle()<CR>", term_opts)
+map("n", "<A-f>", function()
+  require("nvim-tree.api").tree.toggle()
+end, opts)
 
--- search
-map("n", "f", "/", term_opts)
-map("n", "m", "N", opts)
-map("n", "fp", ":lua require('telescope').extensions.file_browser.file_browser{}<CR>", opts)
-map("n", "fa", ":lua require('telescope.builtin').find_files()<CR>", opts)
-map("n", "fg", ":lua require('telescope.builtin').live_grep()<CR>", {})
+-- toggle terminal
+map("n", "<C-t>", function()
+  require("toggleterm").toggle(1)
+end, { desc = "Toggle Terminal" })
 
 -- tab switching
-map("n", "<A-Left>", ":BufferLineCyclePrev<CR>", opts)
-map("n", "<A-Right>", ":BufferLineCycleNext<CR>", opts)
-map("n", "<A-q>", "<cmd>tabclose<CR>", opts) -- no worki
+map("n", "<F1>", ":BufferLineCyclePrev<CR>", opts)
+map("n", "<F2>", ":BufferLineCycleNext<CR>", opts)
 
+-- git
+map("n", "<leader>gq", function()
+  require("telescope.builtin").git_commits()
+end, { desc = "Commits" })
+map("n", "<leader>gw", function()
+  require("telescope.builtin").git_bcommits()
+end, { desc = "Commits in branch" })
+map("n", "<leader>ge", function()
+  require("telescope.builtin").git_branches()
+end, { desc = "Branches" })
+map("n", "<leader>gr", function()
+  require("telescope.builtin").git_status()
+end, { desc = "Git status" })
+map("n", "<leader>ga", function()
+  require("telescope.builtin").git_stash()
+end, { desc = "Git stash" })
 map("n", "<leader>gg", function()
   Util.float_term({ "gitui" }, { cwd = Util.get_root() })
 end, { desc = "gitui (root dir)" })
-
 map("n", "<leader>gG", function()
   Util.float_term({ "gitui" })
 end, { desc = "gitui (cwd)" })
+
+-- window switching
+function _G.set_terminal_maps()
+  local opts = { buffer = 0 }
+  vim.keymap.set("t", "<esc>", [[<C-\><C-n>]], opts)
+  vim.keymap.set("t", "jk", [[<C-\><C-n>]], opts)
+  vim.keymap.set("t", "<A-h>", [[<Cmd>wincmd h<CR>]], opts)
+  vim.keymap.set("t", "<A-j>", [[<Cmd>wincmd j<CR>]], opts)
+  vim.keymap.set("n", "<C-t>", function()
+    require("toggleterm").toggle(1)
+  end, opts)
+  vim.keymap.set("i", "<C-t>", function()
+    require("toggleterm").toggle(1)
+  end, opts)
+end
+
+-- if you only want these mappings for toggle term use term://*toggleterm#* instead
+vim.cmd("autocmd! TermOpen term://* lua set_terminal_maps()")
+map("n", "<A-j>", ":wincmd h<CR>", opts)
+map("n", "<A-k>", ":wincmd j<CR>", opts)
+map("n", "<A-l>", ":wincmd k<CR>", opts)
+map("n", "<A-;>", ":wincmd l<CR>", opts)
+
+-- harpoon man
+map("n", "<leader>h1", function()
+  require("harpoon.ui").nav_file(1)
+end, { desc = "First Harpoon File" })
+map("n", "<leader>h2", function()
+  require("harpoon.ui").nav_file(2)
+end, { desc = "Second Harpoon File" })
+map("n", "<leader>h3", function()
+  require("harpoon.ui").nav_file(3)
+end, { desc = "First Harpoon File" })
+map("n", "<leader>ha", function()
+  require("harpoon.mark").add_file()
+end, { desc = "First Harpoon File" })
+map("n", "<leader>hd", function()
+  require("harpoon.mark").remove_file()
+end, { desc = "First Harpoon File" })
+map("n", "<leader>hm", ":Telescope harpoon marks<CR>", { noremap = true, silent = true, desc = "Show harpoon marks" })
+
+-- telescope
+map("n", "<leader>fb", function()
+  require("telescope").extensions.file_browser.file_browser({})
+end, { desc = "File Browser" })
+map("n", "<leader>ff", function()
+  require("telescope.builtin").find_files()
+end, { desc = "Find Files" })
+map("n", "<leader>fg", function()
+  live_grep_from_project_git_root()
+end, { desc = "Live Grep (root)" })
+map("n", "<leader>fG", function()
+  require("telescope.builtin").live_grep()
+end, { desc = "Live Grep (cwd)" })
+map("n", "<leader>fh", function()
+  require("telescope.builtin").help_tags()
+end, { desc = "Help" })
+map("n", "<leader>fp", function()
+  require("telescope").extensions.project.project({})
+end, { noremap = true, silent = true, desc = "Projects" })
+map("n", "<leader>z", function()
+  require("telescope").extensions.zoxide.list({})
+end, { desc = "Zoxide" })
+
+-- trouble
+map("n", "<leader>t", "<cmd>TroubleToggle<CR>", term_opts)
 
 -- better yank
 function Better_yank(opts)
   local current_line = unpack(vim.api.nvim_win_get_cursor(0))
   vim.api.nvim_command(current_line .. "," .. (opts.count - (current_line - 1)) .. "y")
 end
-vim.api.nvim_create_user_command("BetterYank", Better_yank, { count = 1 })
-map("n", "cc", ":BetterYank<CR>", term_opts) -- better delete
 
+vim.api.nvim_create_user_command("BetterYank", Better_yank, { count = 1 })
+map("n", "by", ":BetterYank<CR>", term_opts)
+
+-- better delete
 function Better_delete(opts)
   local current_line = unpack(vim.api.nvim_win_get_cursor(0))
   vim.api.nvim_command(current_line .. "," .. (opts.count - (current_line - 1)) .. "d")
 end
-vim.api.nvim_create_user_command("BetterDelete", Better_delete, { count = 1 })
 
-map("n", "<leader>d", ":BetterDelete<CR>", term_opts)
+vim.api.nvim_create_user_command("BetterDelete", Better_delete, { count = 1 })
+map("n", "bd", ":BetterDelete<CR>", term_opts)
+
+-- neovide zoom
+local change_scale_factor = function(delta)
+  vim.g.neovide_scale_factor = vim.g.neovide_scale_factor * delta
+end
+vim.keymap.set("n", "<C-=>", function()
+  change_scale_factor(1.25)
+end)
+vim.keymap.set("n", "<C-->", function()
+  change_scale_factor(1 / 1.25)
+end)
+
+-- neovide paste
+vim.g.neovide_input_use_logo = 1
+vim.api.nvim_set_keymap("i", "<C-S-V>", "<ESC>p<CR>I", { noremap = true, silent = true })
+
+function live_grep_from_project_git_root()
+  local function is_git_repo()
+    vim.fn.system("git rev-parse --is-inside-work-tree")
+
+    return vim.v.shell_error == 0
+  end
+
+  local function get_git_root()
+    local dot_git_path = vim.fn.finddir(".git", ".;")
+    return vim.fn.fnamemodify(dot_git_path, ":h")
+  end
+
+  local opts = {}
+
+  if is_git_repo() then
+    opts = {
+      cwd = get_git_root(),
+    }
+  end
+
+  require("telescope.builtin").live_grep(opts)
+end
