@@ -28,7 +28,7 @@ function M.get()
       { "[w", M.diagnostic_goto(false, "WARN"), desc = "Prev Warning" },
       { "<F4>", format, desc = "Format Document", has = "documentFormatting" },
       -- { "<leader>cf", format, desc = "Format Range", mode = "v", has = "documentRangeFormatting" },
-      { "<leader>cq", vim.lsp.buf.code_action, desc = "Code Action", mode = { "n", "v" }, has = "codeAction" },
+      { "<A-CR>", vim.lsp.buf.code_action, desc = "Code Action", mode = { "n", "v" }, has = "codeAction" },
       {
         "<leader>cA",
         function()
@@ -57,7 +57,7 @@ function M.get()
         has = "rename",
       }
     else
-      M._keys[#M._keys + 1] = { "<leader>r", vim.lsp.buf.rename, desc = "Rename", has = "rename" }
+      M._keys[#M._keys + 1] = { "<F2>", vim.lsp.buf.rename, desc = "Rename", has = "rename" }
     end
   end
   return M._keys

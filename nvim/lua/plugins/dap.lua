@@ -16,7 +16,6 @@ return {
             "codelldb",
             "firefox",
             "bash",
-            "delve",
             "coreclr",
           },
           automatic_installation = true,
@@ -46,7 +45,7 @@ return {
         name = "bashdb",
       }
 
-      local rust_dap = vim.fn.getcwd()
+      local rust_dap = Get_git_root().cwd
       local filename = ""
       for w in rust_dap:gmatch("([^/]+)") do
         filename = w
@@ -72,7 +71,7 @@ return {
           type = "lldb",
           request = "launch",
           program = function()
-            return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/build/", "file")
+            return vim.fn.input("Path to executable: ", Get_git_root().cwd .. "/build/", "file")
           end,
           cwd = "${workspaceFolder}",
           stopOnEntry = true,
@@ -105,28 +104,6 @@ return {
           name = "Debug (Attach) - Remote",
           hostName = "127.0.0.1",
           port = 5005,
-        },
-      }
-      dap.configurations.go = {
-        {
-          type = "delve",
-          name = "Debug",
-          request = "launch",
-          program = "${file}",
-        },
-        {
-          type = "delve",
-          name = "Debug test", -- configuration for debugging test files
-          request = "launch",
-          mode = "test",
-          program = "${file}",
-        },
-        {
-          type = "delve",
-          name = "Debug test (go.mod)",
-          request = "launch",
-          mode = "test",
-          program = "./${relativeFileDirname}",
         },
       }
       dap.configurations.javascript = {

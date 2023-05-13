@@ -3,7 +3,7 @@ return {
     "L3MON4D3/LuaSnip",
     build = (not jit.os:find("Windows"))
         and "echo -e 'NOTE: jsregexp is optional, so not a big deal if it fails to build\n'; make install_jsregexp"
-        or nil,
+      or nil,
     dependencies = {
       "rafamadriz/friendly-snippets",
       config = function()
@@ -37,11 +37,11 @@ return {
     opts = function()
       local cmp = require("cmp")
       local luasnip = require("luasnip")
-      local compare = require('cmp.config.compare')
+      local compare = require("cmp.config.compare")
       return {
         preselect = cmp.PreselectMode.None,
         completion = {
-          -- completeopt = "menu,menuone,noinsert",
+          completeopt = "menu,menuone,noinsert", --selects first elem in code completion
         },
         snippet = {
           expand = function(args)
@@ -58,14 +58,14 @@ return {
             behavior = cmp.ConfirmBehavior.Replace,
             select = false,
           }), -- Accept cur
-          ["<Tab>"] = cmp.mapping(function(fallback)
+          ["<Down>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_next_item()
             else
               fallback()
             end
           end, { "i", "s" }),
-          ["<S-Tab>"] = cmp.mapping(function(fallback)
+          ["<Up>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_prev_item()
             else
@@ -98,28 +98,23 @@ return {
             "s",
           }),
         },
-        sorting = {
-          priority_weight = 2,
-          comparators = {
-            compare.offset,
-            compare.exact,
-            -- compare.scopes,
-            compare.kind,
-            compare.score,
-            compare.recently_used,
-            compare.locality,
-            -- compare.sort_text,
-            compare.length,
-            compare.order,
-          },
-        },
         sources = cmp.config.sources({
           { name = "nvim_lsp", priority = 99 },
-          { name = "luasnip", priority = 10, max_item_count = 3 },
-          { name = "buffer", priority = 5, max_item_count = 2, keyword_length = 5 },
-          { name = "async_path", priority = 0, max_item_count = 2, keyword_length = 3, trigger_characters = {} },
+          { name = "luasnip", priority = 3, max_item_count = 3 },
+          { name = "buffer", priority = 2, max_item_count = 2, keyword_length = 5 },
+          { name = "async_path", priority = 1, max_item_count = 2, keyword_length = 3, trigger_characters = {} },
           { name = "crates" },
         }),
+        sorting = {
+          priority_weight = 1,
+          comparators = {
+            compare.sort_text,
+            compare.exact,
+            compare.score,
+            compare.offset,
+            compare.kind,
+          },
+        },
         formatting = {
           preselect = cmp.PreselectMode.None,
           format = function(entry, item)

@@ -8,7 +8,9 @@ return {
   {
     "nvim-telescope/telescope.nvim",
     cmd = "Telescope",
-    keys = function() return {} end,
+    keys = function()
+      return {}
+    end,
     config = function(opts)
       require("telescope").setup(opts)
     end,
@@ -139,7 +141,7 @@ return {
           lookahead = true,
           keymaps = {
             -- You can use the capture groups defined in textobjects.scm
-            ["af"] = "@function.outer",
+            ["of"] = "@function.outer",
             ["if"] = "@function.inner",
             ["ac"] = "@class.outer",
             ["ic"] = "@class.inner",
@@ -216,5 +218,13 @@ return {
       wk.setup(opts)
       wk.register(opts.defaults)
     end,
+  },
+  {
+    "echasnovski/mini.bufremove",
+    -- stylua: ignore
+    keys = {
+      { "<A-q>", function() require("mini.bufremove").delete(0, false) end, desc = "Delete Buffer" },
+      { "<leader>bD", function() require("mini.bufremove").delete(0, true) end, desc = "Delete Buffer (Force)" },
+    },
   },
 }

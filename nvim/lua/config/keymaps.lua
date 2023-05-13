@@ -13,15 +13,10 @@ end
 local opts = { noremap = true, silent = true }
 local term_opts = { silent = true }
 
--- crimes against humanity, but I don't care
-map("n", "j", "h", opts)
-map("n", "l", "k", opts)
-map("n", "k", "j", opts)
-map("n", ";", "l", opts)
-map("v", "j", "h", opts)
-map("v", "k", "j", opts)
-map("v", "l", "k", opts)
-map("v", ";", "l", opts)
+-- general
+map("n", "q", ":qa <CR>", opts)
+map("n", "w", ":wa <CR>", opts)
+map("n", "r", "<C-r>", opts)
 
 -- debug
 map("n", "<leader>db", ':lua require("dap").toggle_breakpoint()<CR>', { desc = "Toggle breakpoint" })
@@ -31,19 +26,26 @@ map("n", "<leader>dc", ':lua require("dap").continue()<CR>', { desc = "Continue"
 map("n", "<leader>dt", ':lua require("dapui").toggle()<CR> :lua require("dap").continue()<CR> ', { desc = "Open DAP" })
 map("n", "<leader>dq", ':lua require("dap").close()<CR> :lua require("dapui").toggle()<CR>', { desc = "Close DAP" })
 
+-- semicolon
+map("n","<C-S-CR>" ,"$a;<CR>", {desc = "add semi and newline"})
+map("i","<C-S-CR>" ,"<C-o>A;<CR>", {desc = "add semi and newline"})
+
+-- cursor movement
+map("n","<C-Left>" ,"<S-Left>", {desc = "Move cursor a block left"})
+map("n","<C-Right>" ,"<S-Right>", {desc = "Move cursor a block right"})
+
 -- file tree
 map("n", "<A-f>", function()
   require("nvim-tree.api").tree.toggle()
 end, opts)
 
 -- toggle terminal
-map("n", "<C-t>", function()
-  require("toggleterm").toggle(1)
-end, { desc = "Toggle Terminal" })
+map("n", "<C-t>", ":lua require('toggleterm').toggle(1)<CR>", { desc = "Toggle Terminal" })
+map("n", "<CS-t>", ":lua require('toggleterm').toggle(2)<CR>", { desc = "Toggle Terminal" })
 
 -- tab switching
-map("n", "<F1>", ":BufferLineCyclePrev<CR>", opts)
-map("n", "<F2>", ":BufferLineCycleNext<CR>", opts)
+map("n", "<A-Left>", ":BufferLineCyclePrev<CR>", opts)
+map("n", "<A-Right>", ":BufferLineCycleNext<CR>", opts)
 
 -- git
 map("n", "<leader>gq", function()
@@ -52,13 +54,13 @@ end, { desc = "Commits" })
 map("n", "<leader>gw", function()
   require("telescope.builtin").git_bcommits()
 end, { desc = "Commits in branch" })
-map("n", "<leader>ge", function()
+map("n", "<leader>gb", function()
   require("telescope.builtin").git_branches()
 end, { desc = "Branches" })
-map("n", "<leader>gr", function()
+map("n", "<leader>gs", function()
   require("telescope.builtin").git_status()
 end, { desc = "Git status" })
-map("n", "<leader>ga", function()
+map("n", "<leader>gt", function()
   require("telescope.builtin").git_stash()
 end, { desc = "Git stash" })
 map("n", "<leader>gg", function()
@@ -80,6 +82,15 @@ function _G.set_terminal_maps()
   end, opts)
   vim.keymap.set("i", "<C-t>", function()
     require("toggleterm").toggle(1)
+  end, opts)
+  vim.keymap.set("i", "<CS-t>", function()
+    require("toggleterm").toggle(2)
+  end, opts)
+  vim.keymap.set("t", "<C-t>", function()
+    require("toggleterm").toggle(1)
+  end, opts)
+  vim.keymap.set("t", "<CS-t>", function()
+    require("toggleterm").toggle(2)
   end, opts)
 end
 
@@ -116,7 +127,7 @@ map("n", "<leader>ff", function()
   require("telescope.builtin").find_files()
 end, { desc = "Find Files" })
 map("n", "<leader>fg", function()
-  live_grep_from_project_git_root()
+  Live_grep_from_project_git_root()
 end, { desc = "Live Grep (root)" })
 map("n", "<leader>fG", function()
   require("telescope.builtin").live_grep()
@@ -156,7 +167,7 @@ map("n", "bd", ":BetterDelete<CR>", term_opts)
 local change_scale_factor = function(delta)
   vim.g.neovide_scale_factor = vim.g.neovide_scale_factor * delta
 end
-vim.keymap.set("n", "<C-=>", function()
+vim.keymap.set("n", "<C-+>", function()
   change_scale_factor(1.25)
 end)
 vim.keymap.set("n", "<C-->", function()
@@ -167,25 +178,26 @@ end)
 vim.g.neovide_input_use_logo = 1
 vim.api.nvim_set_keymap("i", "<C-S-V>", "<ESC>p<CR>I", { noremap = true, silent = true })
 
-function live_grep_from_project_git_root()
+function Get_git_root()
+  local opts = {}
   local function is_git_repo()
     vim.fn.system("git rev-parse --is-inside-work-tree")
-
     return vim.v.shell_error == 0
   end
 
-  local function get_git_root()
-    local dot_git_path = vim.fn.finddir(".git", ".;")
-    return vim.fn.fnamemodify(dot_git_path, ":h")
-  end
-
-  local opts = {}
-
   if is_git_repo() then
+    local dot_git_path = vim.fn.finddir(".git", ".;")
+    local root = vim.fn.fnamemodify(dot_git_path, ":h")
+
     opts = {
-      cwd = get_git_root(),
+      cwd = root,
     }
   end
+
+  return opts
+end
+function Live_grep_from_project_git_root()
+  local opts = Get_git_root()
 
   require("telescope.builtin").live_grep(opts)
 end
