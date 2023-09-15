@@ -1,0 +1,129 @@
+* {
+  color: #71bbe6;
+  padding: 0px;
+  margin: 0px;
+}
+
+.background {
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.workspaces {
+  margin: 2px 0px 0px 5px;
+  border-radius: 10px;
+  /* background-color: #2b2c3b; */
+  background-color: #1a1b26;
+  padding: 2px 5px 2px 5px;
+}
+
+.workspaces .item {
+  margin: 0px 3px 0px 3px;
+  font-size: 13px;
+  border-radius: 100%;
+  padding: 0px 2px 0px 3px;
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.workspaces .item:hover {
+  background-color: #3e4152;
+}
+
+.workspaces .item.focused {
+  background-color: #3e4152;
+}
+
+.audio-box {
+  padding: 2em;
+  background-color: #1a1b26;
+  border-radius: 5px;
+}
+
+.audio-slider {
+  padding: 5px;
+  margin: 5px;
+}
+
+.audio-button {
+  padding: 5px 10px 5px 10px;
+  margin: 0px 1em 20px 1em;
+  border-radius: 100%;
+  font-size: 17px;
+}
+
+.audio-button-box {
+  padding: 0px 2.5em 0px 2.5em;
+}
+
+.focused {
+  /* margin: 2px 0px 0px 0px; */
+  padding: 0px 5px 0px 5px;
+  background-color: #1a1b26;
+  font-size: 17px;
+  border-radius: 10px;
+}
+
+#bar #end {
+  margin: 0px 5px 0px 0px;
+  padding: 0px 5px 0px 5px;
+  background-color: #1a1b26;
+  border-radius: 10px;
+}
+
+.popup-button {
+  padding: 0px 5px 0px 3px;
+  margin: 0em 3px;
+  border-radius: 100%;
+  font-size: 13px;
+  background-color: #1a1b26;
+}
+
+.popup-button-box {
+  padding: 2px 0px 2px 0px;
+}
+
+.clock {
+  padding: 0px 5px 0px 5px;
+  font-size: 17px;
+  background-color: #1a1b26;
+}
+
+.clock:hover {
+  background-color: #3e4152;
+}
+
+.custom button {
+  background-color: #1a1b26;
+}
+
+.custom button:hover {
+  background-color: #3e4152;
+}
+
+.memory-usage {
+  font-size: 15px;
+  margin: 0px 5px 0px 0px;
+}
+
+.memory-usage:hover {
+  background-color: #3e4152;
+}
+
+.popup-clock {
+  background-color: #1a1b26;
+  border-radius: 5px;
+  padding: 2px 8px 10px 8px;
+}
+
+.popup-clock .calendar-clock {
+  font-size: 2.5em;
+  padding-bottom: 0.1em;
+}
+
+.popup-clock .calendar {
+  border-radius: 5px;
+  font-size: 1.05em;
+}
+
+.popup-clock .calendar:selected {
+  background-color: #3e4152;
+}

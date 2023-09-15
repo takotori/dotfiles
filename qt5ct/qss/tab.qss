@@ -1,0 +1,6 @@
+QTabBar::tab:selected {
+    color: palette(highlight);
+}
+QMenuBar, QMenu, QToolBar, QStatusBar, QFrame, QScrollBar {
+    border: none;
+}

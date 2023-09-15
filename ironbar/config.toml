@@ -1,0 +1,31 @@
+end = [
+  { type = "sys_info", format = [
+    " {memory_percent}",
+  ], interval.memory = 30, class = "memory-usage" },
+  { type = "custom", bar = [
+    { type = "button", class = "popup-button", label = "", on_click = "popup:toggle" },
+  ], class = "popup-button-box", popup = [
+    { type = "box", orientation = "vertical", class = "audio-box", widgets = [
+      { type = "box", orientation = "horizontal", widgets = [
+        { type = "button", class = "audio-button", label = "", on_click = "!/home/dashie/.config/eww/scripts/audio_control.sh bluetooth" },
+        { type = "button", class = "audio-button", label = "󰋋", on_click = "!/home/dashie/.config/eww/scripts/audio_control.sh internal" },
+      ], class = "audio-button-box" },
+      { type = "label", label = "Output" },
+      { type = "slider", class = "audio-slider", step = 1.0, length = 200, value = "pactl get-sink-volume @DEFAULT_SINK@ | awk -F'/' '{ print $2 }' | tr -d ' %'", on_change = "!pactl set-sink-volume @DEFAULT_SINK@ $0%" },
+      { type = "label", label = "Input" },
+      { type = "slider", class = "audio-slider", step = 1.0, length = 200, value = "pactl get-source-volume @DEFAULT_SOURCE@ | awk -F'/' '{ print $2 }' | tr -d ' %'", on_change = "!pactl set-source-volume @DEFAULT_SOURCE@ $0%" },
+    ] },
+  ] },
+  { type = "custom", bar = [
+    { type = "button", class = "popup-button", label = "", on_click = "!oxidash --css /home/dashie/gits/oxidash/style.css" },
+  ], class = "popup-button-box" },
+  { type = "clock", format = "%I:%M", format_popup = "%I:%M:%S", locale = "en_US" },
+  { type = "tray" },
+]
+position = "top"
+height = 10
+anchor_to_edges = true
+start = [{ type = "workspaces", all_monitors = true }]
+center = [
+  { type = "focused", show_icon = true, show_title = true, icon_size = 20, truncate = "end" },
+]
