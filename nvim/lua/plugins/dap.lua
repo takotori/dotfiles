@@ -1,5 +1,24 @@
 return {
   {
+    "rcarriga/nvim-dap-ui",
+    keys = {},
+    opts = {},
+    config = function(_, opts)
+      local dap = require("dap")
+      local dapui = require("dapui")
+      dapui.setup(opts)
+      dap.listeners.after.event_initialized["dapui_config"] = function()
+        dapui.open({})
+      end
+      dap.listeners.before.event_terminated["dapui_config"] = function()
+        dapui.close({})
+      end
+      dap.listeners.before.event_exited["dapui_config"] = function()
+        dapui.close({})
+      end
+    end,
+  },
+  {
     "mfussenegger/nvim-dap",
     lazy = true,
     dependencies = {
@@ -16,6 +35,7 @@ return {
             "codelldb",
             "firefox",
             "bash",
+            "delve",
             "coreclr",
           },
           automatic_installation = true,
@@ -23,9 +43,9 @@ return {
         },
         config = function(_, opts)
           require("mason-nvim-dap").setup(opts)
-          require("mason-nvim-dap").setup_handlers({
-            javadbg = function() end,
-          })
+          -- require("mason-nvim-dap").setup_handlers({
+          --   javadbg = function() end,
+          -- })
         end,
       },
     },
@@ -44,12 +64,19 @@ return {
         command = vim.fn.stdpath("data") .. "/mason/packages/bash-debug-adapter/bash-debug-adapter",
         name = "bashdb",
       }
+      dap.adapters.coreclr = {
+        type = "executable",
+        command = "netcoredbg",
+        args = { "--interpreter=vscode" },
+      }
 
       local rust_dap = Get_git_root().cwd
       local filename = ""
       for w in rust_dap:gmatch("([^/]+)") do
         filename = w
       end
+      filename = filename:gsub("-", "_")
+      filename = string.lower(filename)
 
       dap.configurations.rust = {
         {
@@ -60,8 +87,26 @@ return {
           end,
           --program = '${fileDirname}/${fileBasenameNoExtension}',
           cwd = "${workspaceFolder}",
-          stopOnEntry = true,
           terminal = "integrated",
+          initCommands = function()
+            -- Find out where to look for the pretty printer Python module
+            local rustc_sysroot = vim.fn.trim(vim.fn.system("rustc --print sysroot"))
+
+            local script_import = 'command script import "' .. rustc_sysroot .. '/lib/rustlib/etc/lldb_lookup.py"'
+            local commands_file = rustc_sysroot .. "/lib/rustlib/etc/lldb_commands"
+
+            local commands = {}
+            local file = io.open(commands_file, "r")
+            if file then
+              for line in file:lines() do
+                table.insert(commands, line)
+              end
+              file:close()
+            end
+            table.insert(commands, 1, script_import)
+
+            return commands
+          end,
         },
       }
 
@@ -74,7 +119,6 @@ return {
             return vim.fn.input("Path to executable: ", Get_git_root().cwd .. "/build/", "file")
           end,
           cwd = "${workspaceFolder}",
-          stopOnEntry = true,
           terminal = "integrated",
         },
       }
@@ -104,6 +148,28 @@ return {
           name = "Debug (Attach) - Remote",
           hostName = "127.0.0.1",
           port = 5005,
+        },
+      }
+      dap.configurations.go = {
+        {
+          type = "delve",
+          name = "Debug",
+          request = "launch",
+          program = "${file}",
+        },
+        {
+          type = "delve",
+          name = "Debug test", -- configuration for debugging test files
+          request = "launch",
+          mode = "test",
+          program = "${file}",
+        },
+        {
+          type = "delve",
+          name = "Debug test (go.mod)",
+          request = "launch",
+          mode = "test",
+          program = "./${relativeFileDirname}",
         },
       }
       dap.configurations.javascript = {
@@ -142,8 +208,11 @@ return {
           name = "launch - netcoredbg",
           request = "launch",
           program = function()
-            return vim.fn.input("Path to dll", vim.fn.getcwd() .. "/bin/Debug/", "file")
+            return vim.fn.input("Path to dll: ", Get_git_root().cwd, "file")
           end,
+          -- args = function()
+          --   vim.fn.input("args: ", Get_git_root().cwd, "file")
+          -- end,
         },
       }
       dap.configurations.sh = {
@@ -230,4 +299,3 @@ return {
     end,
   },
 }
-

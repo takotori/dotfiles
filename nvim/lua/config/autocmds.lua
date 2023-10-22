@@ -1,17 +1,3 @@
--- Autocmds are automatically loaded on the VeryLazy event
--- Default autocmds that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/autocmds.lua
--- Add any additional autocmds here
--- local function augroup(name)
---   return vim.api.nvim_create_augroup("lazyvim_" .. name, { clear = true })
--- end
--- vim.api.nvim_create_autocmd("TextYankPost", {
--- 	group = augroup("toggle_relative_group"),
--- 	callback = function(_)
--- 		vim.cmd("set norelativenumber")
--- 	end,
--- })
--- nvim-tree is also there in modified buffers so this function filter it out
-
 vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(ev)
     local client = vim.lsp.get_client_by_id(ev.data.client_id)
@@ -34,7 +20,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 local modifiedBufs = function(bufs)
   local t = 0
-  for k, v in pairs(bufs) do
+  for _, v in pairs(bufs) do
     if v.name:match("NvimTree_") == nil then
       t = t + 1
     end

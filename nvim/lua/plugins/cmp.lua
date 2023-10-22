@@ -41,7 +41,7 @@ return {
       return {
         preselect = cmp.PreselectMode.None,
         completion = {
-          completeopt = "menu,menuone,noinsert", --selects first elem in code completion
+          -- completeopt = "menu,menuone,noinsert",
         },
         snippet = {
           expand = function(args)
@@ -58,14 +58,14 @@ return {
             behavior = cmp.ConfirmBehavior.Replace,
             select = false,
           }), -- Accept cur
-          ["<Down>"] = cmp.mapping(function(fallback)
+          ["<Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_next_item()
             else
               fallback()
             end
           end, { "i", "s" }),
-          ["<Up>"] = cmp.mapping(function(fallback)
+          ["<S-Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_prev_item()
             else
@@ -108,7 +108,6 @@ return {
         sorting = {
           priority_weight = 1,
           comparators = {
-            compare.sort_text,
             compare.exact,
             compare.score,
             compare.offset,

@@ -18,14 +18,11 @@ local file_pattern = "*.typst"
 -- snippers go here:
 
 local colorSnippet = s(
-	"tx-",
-	fmt(
-  [[ #text({1})[{2}] ]],
-		{
-			i(1, "color"),
-			i(2, "text"),
-		}
-	)
+  "tx-",
+  fmt([[ #text({1})[{2}] ]], {
+    i(1, "color"),
+    i(2, "text"),
+  })
 )
 table.insert(snippets, colorSnippet)
 
@@ -36,8 +33,8 @@ local imageSnippet = s(
     #image("{1}", width: {2}%)
     ]],
     {
-      i(1, "image"),
-      i(2, "width"),
+      i(1, "../../Screenshots/"),
+      i(2, "100"),
     }
   )
 )
@@ -50,8 +47,8 @@ local centerImageSnippet = s(
     #align(center, [#image("{1}", width: {2}%)])
     ]],
     {
-      i(1, "image"),
-      i(2, "width"),
+      i(1, "../../Screenshots"),
+      i(2, "100"),
     }
   )
 )
@@ -70,5 +67,60 @@ local colSnippet = s(
   )
 )
 table.insert(snippets, colSnippet)
+
+local codeSnippet = s(
+  "code-",
+  fmt(
+    [[
+    //typstfmt::off
+    ```{1}
+    {2}
+    ```
+    //typstfmt::on
+
+    ]],
+    {
+      i(1, "lang"),
+      i(2, "code"),
+    }
+  )
+)
+table.insert(snippets, codeSnippet)
+
+local patternSnippet = s(
+  "pattern-",
+  fmt(
+    [[
+    #subsection([{1}])
+    #set text(size: 14pt)
+    
+    Problem | {2}
+    Context | {3} 
+    Participants :
+    - {4}
+    #set text(size: 11pt)
+    // images
+    {5}
+    
+    #columns(2, [
+      #text(green)[Benefits]
+      - {6}
+      #colbreak()
+      #text(red)[Liabilities]
+      - {7}
+    ])
+    ]],
+    {
+      i(1, "pattern"),
+      i(2, "problem"),
+      i(3, "context"),
+      i(4, ""),
+      i(5, ""),
+      i(6, ""),
+      i(7, ""),
+    }
+  )
+)
+table.insert(snippets, patternSnippet)
 ------------------------------------------------- snippets end
 return snippets, autosnippets

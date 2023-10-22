@@ -25,6 +25,12 @@
 | <leader>dt  | start debugging           |
 | <leader>dq  | close debug UI            |
 
+## neotest
+| key         | Description               |
+| ----------- | ------------------------- |
+| <leader>tt  | execute all tests         |
+| <leader>tT  | execute nearest test      |
+
 ## Nvim-Tree
 | key | Description                |
 | --- | -------------------------- |
@@ -123,7 +129,8 @@ Note, these require the cmp list view to be open to do anything!
 |  Leader + cs | go to definition       |
 |  Leader + cd | go to type definitions |
 |  Leader + cf | go to references       |
-|  Leader + cq | execute code actions   |
+|  Leader + cq | fix code action        |
+|  Leader + cQ | refactor code action   |
 |  Leader + cw | signature help         |
 |  Leader + ce | hover                  |
 |  Leader + cr | rename                 |

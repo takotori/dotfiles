@@ -5,11 +5,12 @@ M._keys = nil
 
 ---@return (LazyKeys|{has?:string})[]
 function M.get()
-  local format = require("lazyvim.plugins.lsp.format").format
+  local format = function()
+    require("lazyvim.util").format({ force = true })
+  end
   if not M._keys then
-  ---@class PluginLspKeys
-    -- stylua: ignore
-    M._keys =  {
+    ---@class PluginLspKeys
+    M._keys = {
       { "<leader>cld", vim.diagnostic.open_float, desc = "Line Diagnostics" },
       { "<leader>cl", "<cmd>LspInfo<cr>", desc = "Lsp Info" },
       { "<leader>ca", "<cmd>Telescope lsp_definitions<cr>", desc = "Goto Definition", has = "definition" },
@@ -26,24 +27,46 @@ function M.get()
       { "[e", M.diagnostic_goto(false, "ERROR"), desc = "Prev Error" },
       { "]w", M.diagnostic_goto(true, "WARN"), desc = "Next Warning" },
       { "[w", M.diagnostic_goto(false, "WARN"), desc = "Prev Warning" },
-      { "<F4>", format, desc = "Format Document", has = "documentFormatting" },
+      { "<F4>", format, desc = "Format Document", has = "formatting" },
       -- { "<leader>cf", format, desc = "Format Range", mode = "v", has = "documentRangeFormatting" },
-      { "<A-CR>", vim.lsp.buf.code_action, desc = "Code Action", mode = { "n", "v" }, has = "codeAction" },
       {
-        "<leader>cA",
+        "<leader>cq",
         function()
           vim.lsp.buf.code_action({
             context = {
               only = {
+                "quickfix",
+                "quickfix.ltex",
                 "source",
+                "source.fixAll",
+                "source.organizeImports",
+                "",
               },
-              diagnostics = {},
             },
           })
         end,
-        desc = "Source Action",
+        desc = "Fix",
+        mode = { "n", "v" },
         has = "codeAction",
-      }
+      },
+      {
+        "<leader>cQ",
+        function()
+          vim.lsp.buf.code_action({
+            context = {
+              only = {
+                "refactor",
+                "refactor.inline",
+                "refactor.extract",
+                "refactor.rewrite",
+              },
+            },
+          })
+        end,
+        desc = "Refactor",
+        mode = { "n", "v" },
+        has = "codeAction",
+      },
     }
     if require("lazyvim.util").has("inc-rename.nvim") then
       M._keys[#M._keys + 1] = {
@@ -57,33 +80,51 @@ function M.get()
         has = "rename",
       }
     else
-      M._keys[#M._keys + 1] = { "<F2>", vim.lsp.buf.rename, desc = "Rename", has = "rename" }
+      M._keys[#M._keys + 1] = { "<leader>cr", vim.lsp.buf.rename, desc = "Rename", has = "rename" }
     end
   end
   return M._keys
 end
 
-function M.on_attach(client, buffer)
-  local Keys = require("lazy.core.handler.keys")
-  local keymaps = {} ---@type table<string,LazyKeys|{has?:string}>
-
-  for _, value in ipairs(M.get()) do
-    local keys = Keys.parse(value)
-    if keys[2] == vim.NIL or keys[2] == false then
-      keymaps[keys.id] = nil
-    else
-      keymaps[keys.id] = keys
+---@param method string
+function M.has(buffer, method)
+  method = method:find("/") and method or "textDocument/" .. method
+  local clients = require("lazyvim.util").lsp.get_clients({ bufnr = buffer })
+  for _, client in ipairs(clients) do
+    if client.supports_method(method) then
+      return true
     end
   end
+  return false
+end
+
+---@return (LazyKeys|{has?:string})[]
+function M.resolve(buffer)
+  local Keys = require("lazy.core.handler.keys")
+  if not Keys.resolve then
+    return {}
+  end
+  local spec = M.get()
+  local opts = require("lazyvim.util").opts("nvim-lspconfig")
+  local clients = require("lazyvim.util").lsp.get_clients({ bufnr = buffer })
+  for _, client in ipairs(clients) do
+    local maps = opts.servers[client.name] and opts.servers[client.name].keys or {}
+    vim.list_extend(spec, maps)
+  end
+  return Keys.resolve(spec)
+end
+
+function M.on_attach(_, buffer)
+  local Keys = require("lazy.core.handler.keys")
+  local keymaps = M.resolve(buffer)
 
   for _, keys in pairs(keymaps) do
-    if not keys.has or client.server_capabilities[keys.has .. "Provider"] then
+    if not keys.has or M.has(buffer, keys.has) then
       local opts = Keys.opts(keys)
-      ---@diagnostic disable-next-line: no-unknown
       opts.has = nil
       opts.silent = opts.silent ~= false
       opts.buffer = buffer
-      vim.keymap.set(keys.mode or "n", keys[1], keys[2], opts)
+      vim.keymap.set(keys.mode or "n", keys.lhs, keys.rhs, opts)
     end
   end
 end

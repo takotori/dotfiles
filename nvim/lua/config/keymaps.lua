@@ -13,26 +13,35 @@ end
 local opts = { noremap = true, silent = true }
 local term_opts = { silent = true }
 
--- general
-map("n", "q", ":qa <CR>", opts)
-map("n", "w", ":wa <CR>", opts)
-map("n", "r", "<C-r>", opts)
+-- crimes against humanity, but I don't care
+map("n", "j", "h", opts)
+map("n", "l", "k", opts)
+map("n", "k", "j", opts)
+map("n", ";", "l", opts)
+map("v", "j", "h", opts)
+map("v", "k", "j", opts)
+map("v", "l", "k", opts)
+map("v", ";", "l", opts)
 
 -- debug
 map("n", "<leader>db", ':lua require("dap").toggle_breakpoint()<CR>', { desc = "Toggle breakpoint" })
 map("n", "<leader>do", ':lua require("dap").step_over()<CR>', { desc = "Step over" })
 map("n", "<leader>di", ':lua require("dap").step_into()<CR>', { desc = "Step into" })
 map("n", "<leader>dc", ':lua require("dap").continue()<CR>', { desc = "Continue" })
-map("n", "<leader>dt", ':lua require("dapui").toggle()<CR> :lua require("dap").continue()<CR> ', { desc = "Open DAP" })
-map("n", "<leader>dq", ':lua require("dap").close()<CR> :lua require("dapui").toggle()<CR>', { desc = "Close DAP" })
+map("n", "<leader>du", function()
+  require("dapui").toggle()
+end, { desc = "Toggle DAP UI" })
+map("n", "<leader>de", function()
+  require("dapui").eval()
+end, { desc = "DAP Eval" })
 
--- semicolon
-map("n","<C-S-CR>" ,"$a;<CR>", {desc = "add semi and newline"})
-map("i","<C-S-CR>" ,"<C-o>A;<CR>", {desc = "add semi and newline"})
-
--- cursor movement
-map("n","<C-Left>" ,"<S-Left>", {desc = "Move cursor a block left"})
-map("n","<C-Right>" ,"<S-Right>", {desc = "Move cursor a block right"})
+-- window movement
+map("n", "<A-j>", [[<Cmd>wincmd h<CR>]], opts)
+map("n", "<A-;>", [[<Cmd>wincmd l<CR>]], opts)
+map("n", "<A-t>", [[<Cmd>wincmd j<CR>]], opts)
+map("i", "<A-j>", [[<Cmd>wincmd h<CR>]], opts)
+map("i", "<A-;>", [[<Cmd>wincmd l<CR>]], opts)
+map("i", "<A-k>", [[<Cmd>wincmd j<CR>]], opts)
 
 -- file tree
 map("n", "<A-f>", function()
@@ -40,12 +49,21 @@ map("n", "<A-f>", function()
 end, opts)
 
 -- toggle terminal
-map("n", "<C-t>", ":lua require('toggleterm').toggle(1)<CR>", { desc = "Toggle Terminal" })
-map("n", "<CS-t>", ":lua require('toggleterm').toggle(2)<CR>", { desc = "Toggle Terminal" })
+local lazyterm = function()
+  Util.terminal(nil, { cwd = Util.root(), esc_esc = false, ctrl_hjkl = false })
+end
+map("n", "<c-t>", lazyterm, { desc = "Terminal (root dir)" })
+map("t", "<c-t>", "<cmd>close<cr>", { desc = "Hide Terminal" })
+
+-- semicolon thing
+-- map("i","<C-m>" ,"<C-o>A;<CR>", {desc = "add semi and newline"})
+-- map("i","<C-n>" ,"<C-o>A;<ESC>", {desc = "add semi"})
+map("n", "<leader>m", "$a;<CR>", { desc = "add semi and newline" })
+map("n", "<leader>n", "$a;<ESC>", { desc = "add semi" })
 
 -- tab switching
-map("n", "<A-Left>", ":BufferLineCyclePrev<CR>", opts)
-map("n", "<A-Right>", ":BufferLineCycleNext<CR>", opts)
+map("n", "<F1>", ":BufferLineCyclePrev<CR>", opts)
+map("n", "<F2>", ":BufferLineCycleNext<CR>", opts)
 
 -- git
 map("n", "<leader>gq", function()
@@ -54,13 +72,13 @@ end, { desc = "Commits" })
 map("n", "<leader>gw", function()
   require("telescope.builtin").git_bcommits()
 end, { desc = "Commits in branch" })
-map("n", "<leader>gb", function()
+map("n", "<leader>ge", function()
   require("telescope.builtin").git_branches()
 end, { desc = "Branches" })
-map("n", "<leader>gs", function()
+map("n", "<leader>gr", function()
   require("telescope.builtin").git_status()
 end, { desc = "Git status" })
-map("n", "<leader>gt", function()
+map("n", "<leader>ga", function()
   require("telescope.builtin").git_stash()
 end, { desc = "Git stash" })
 map("n", "<leader>gg", function()
@@ -69,37 +87,10 @@ end, { desc = "gitui (root dir)" })
 map("n", "<leader>gG", function()
   Util.float_term({ "gitui" })
 end, { desc = "gitui (cwd)" })
-
--- window switching
-function _G.set_terminal_maps()
-  local opts = { buffer = 0 }
-  vim.keymap.set("t", "<esc>", [[<C-\><C-n>]], opts)
-  vim.keymap.set("t", "jk", [[<C-\><C-n>]], opts)
-  vim.keymap.set("t", "<A-h>", [[<Cmd>wincmd h<CR>]], opts)
-  vim.keymap.set("t", "<A-j>", [[<Cmd>wincmd j<CR>]], opts)
-  vim.keymap.set("n", "<C-t>", function()
-    require("toggleterm").toggle(1)
-  end, opts)
-  vim.keymap.set("i", "<C-t>", function()
-    require("toggleterm").toggle(1)
-  end, opts)
-  vim.keymap.set("i", "<CS-t>", function()
-    require("toggleterm").toggle(2)
-  end, opts)
-  vim.keymap.set("t", "<C-t>", function()
-    require("toggleterm").toggle(1)
-  end, opts)
-  vim.keymap.set("t", "<CS-t>", function()
-    require("toggleterm").toggle(2)
-  end, opts)
-end
-
--- if you only want these mappings for toggle term use term://*toggleterm#* instead
-vim.cmd("autocmd! TermOpen term://* lua set_terminal_maps()")
-map("n", "<A-j>", ":wincmd h<CR>", opts)
-map("n", "<A-k>", ":wincmd j<CR>", opts)
-map("n", "<A-l>", ":wincmd k<CR>", opts)
-map("n", "<A-;>", ":wincmd l<CR>", opts)
+map("n", "<leader>gb", function()
+  require("gitblame")
+  vim.cmd(":GitBlameToggle")
+end, { desc = "gitui (cwd)" })
 
 -- harpoon man
 map("n", "<leader>h1", function()
@@ -142,6 +133,12 @@ map("n", "<leader>z", function()
   require("telescope").extensions.zoxide.list({})
 end, { desc = "Zoxide" })
 
+-- neoscroll
+local t = {}
+t["<A-l>"] = { "scroll", { "-vim.wo.scroll", "true", "250" } }
+t["<A-k>"] = { "scroll", { "vim.wo.scroll", "true", "250" } }
+require("neoscroll.config").set_mappings(t)
+
 -- trouble
 map("n", "<leader>t", "<cmd>TroubleToggle<CR>", term_opts)
 
@@ -167,7 +164,7 @@ map("n", "bd", ":BetterDelete<CR>", term_opts)
 local change_scale_factor = function(delta)
   vim.g.neovide_scale_factor = vim.g.neovide_scale_factor * delta
 end
-vim.keymap.set("n", "<C-+>", function()
+vim.keymap.set("n", "<C-=>", function()
   change_scale_factor(1.25)
 end)
 vim.keymap.set("n", "<C-->", function()
@@ -182,22 +179,20 @@ function Get_git_root()
   local opts = {}
   local function is_git_repo()
     vim.fn.system("git rev-parse --is-inside-work-tree")
+
     return vim.v.shell_error == 0
   end
-
   if is_git_repo() then
     local dot_git_path = vim.fn.finddir(".git", ".;")
     local root = vim.fn.fnamemodify(dot_git_path, ":h")
-
     opts = {
       cwd = root,
     }
   end
-
   return opts
 end
+
 function Live_grep_from_project_git_root()
   local opts = Get_git_root()
-
   require("telescope.builtin").live_grep(opts)
 end

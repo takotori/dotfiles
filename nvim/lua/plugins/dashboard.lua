@@ -52,7 +52,7 @@ return {
       }
 
       local function footer()
-        return "ina inai"
+        return "dashie@dashie.org"
       end
 
       dashboard.section.footer.val = footer()
@@ -62,6 +62,8 @@ return {
       dashboard.section.buttons.opts.hl = "Keyword"
 
       dashboard.opts.opts.noautocmd = true
+
+      -- alpha.pad_margin(dashboard.section.header.val, dashboard.opts , 0, 0)
       alpha.setup(dashboard.opts)
     end,
     config = function(_, dashboard)
@@ -76,17 +78,16 @@ return {
         })
       end
 
-
-  require("alpha").setup({
-    layout = {
-      { type = "padding", val = 1 },
-      dashboard.section.header,
-      { type = "padding", val = 1 },
-      dashboard.section.buttons,
-      { type = "padding", val = 1 },
-      dashboard.section.footer,
-    },
-  })
+      require("alpha").setup({
+        layout = {
+          { type = "padding", val = 1 },
+          dashboard.section.header,
+          { type = "padding", val = 1 },
+          dashboard.section.buttons,
+          { type = "padding", val = 1 },
+          dashboard.section.footer,
+        },
+      })
 
       vim.api.nvim_create_autocmd("User", {
         pattern = "LazyVimStarted",
