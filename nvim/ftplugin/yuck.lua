@@ -1,1 +1,0 @@
--- require("yuck.vim").setup()

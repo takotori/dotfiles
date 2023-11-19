@@ -43,11 +43,6 @@ map("i", "<A-j>", [[<Cmd>wincmd h<CR>]], opts)
 map("i", "<A-;>", [[<Cmd>wincmd l<CR>]], opts)
 map("i", "<A-k>", [[<Cmd>wincmd j<CR>]], opts)
 
--- file tree
-map("n", "<A-f>", function()
-  require("nvim-tree.api").tree.toggle()
-end, opts)
-
 -- toggle terminal
 local lazyterm = function()
   Util.terminal(nil, { cwd = Util.root(), esc_esc = false, ctrl_hjkl = false })
@@ -72,7 +67,7 @@ end, { desc = "Commits" })
 map("n", "<leader>gw", function()
   require("telescope.builtin").git_bcommits()
 end, { desc = "Commits in branch" })
-map("n", "<leader>ge", function()
+map("n", "<leader>gb", function()
   require("telescope.builtin").git_branches()
 end, { desc = "Branches" })
 map("n", "<leader>gr", function()
@@ -82,10 +77,10 @@ map("n", "<leader>ga", function()
   require("telescope.builtin").git_stash()
 end, { desc = "Git stash" })
 map("n", "<leader>gg", function()
-  Util.float_term({ "gitui" }, { cwd = Util.get_root() })
+  Util.terminal({ "gitui" }, { cwd = Util.root() })
 end, { desc = "gitui (root dir)" })
 map("n", "<leader>gG", function()
-  Util.float_term({ "gitui" })
+  Util.terminal({ "gitui" })
 end, { desc = "gitui (cwd)" })
 map("n", "<leader>gb", function()
   require("gitblame")
@@ -141,6 +136,11 @@ require("neoscroll.config").set_mappings(t)
 
 -- trouble
 map("n", "<leader>t", "<cmd>TroubleToggle<CR>", term_opts)
+
+-- format
+map({ "n", "v" }, "<F4>", function()
+  Util.format({ force = true })
+end, { desc = "Format" })
 
 -- better yank
 function Better_yank(opts)

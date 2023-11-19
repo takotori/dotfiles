@@ -13,39 +13,38 @@
 | \<A-k\> | window up                 |
 | \<A-l\> | window down               |
 | \<A-;\> | window right              |
+| \<A-f\> | open file tree (root      |
+| \<A-F\> | open file tree (cwd)      |
 
 
 ## Debugging
-| key         | Description               |
-| ----------- | ------------------------- |
-| <leader>dt  | toggle breakpoint         |
-| <leader>do  | step over breakpoint      |
-| <leader>di  | step into breakpoint      |
-| <leader>dc  | continue from breakpoint  |
-| <leader>dt  | start debugging           |
-| <leader>dq  | close debug UI            |
+| key         | Description           |
+| ----------- | --------------------- |
+| \<leader\>da  | run with args         |
+| \<leader\>db  | toggle breakpoint     |
+| \<leader\>dB  | breakpoint condition  |
+| \<leader\>dC  | run to cursoor        |
+| \<leader\>dc  | continue              |
+| \<leader\>de  | eval                  |
+| \<leader\>dg  | go to line            |
+| \<leader\>di  | step into             |
+| \<leader\>k   | down                  |
+| \<leader\>l   | up                    |
+| \<leader\>;   | run last              |
+| \<leader\>dO  | step over             |
+| \<leader\>do  | step out              |
+| \<leader\>dp  | pause                 |
+| \<leader\>dr  | toggle repl           |
+| \<leader\>ds  | session               |
+| \<leader\>dt  | terminate             |
+| \<leader\>du  | DAP UI                |
+| \<leader\>dw  | widgets               |
 
 ## neotest
 | key         | Description               |
 | ----------- | ------------------------- |
-| <leader>tt  | execute all tests         |
-| <leader>tT  | execute nearest test      |
-
-## Nvim-Tree
-| key | Description                |
-| --- | -------------------------- |
-| f   | toggle open                |
-| a   | create new file            |
-| d   | remove file                |
-| r   | rename file                |
-| y   | copy name                  |
-| Y   | copy path                  |
-| x   | cut file                   |
-| c   | copy file                  |
-| p   | paste file                 |
-| f   | filter (inside nvim tree)  |
-| E   | expand all folders         |
-| W   | collapse all folders       |
+| \<leader\>tt  | execute all tests         |
+| \<leader\>tT  | execute nearest test      |
 
 ## buffer switching
 | key | Description               |
@@ -61,20 +60,21 @@
 ## telescope
 | key         | Description               |
 | ----------- | ------------------------- |
-| <leader>ff  | find files                |
-| <leader>fg  | live ripgrep              |
-| <leader>fh  | help for functions etc    |
-| <leader>fp  | find projects             |
-| <leader>fb  | file browser              |
+| \<leader\>ff  | find files                |
+| \<leader\>fg  | live ripgrep              |
+| \<leader\>fh  | help for functions etc    |
+| \<leader\>fp  | find projects             |
+| \<leader\>fb  | file browser              |
 
 ### telescope git
 | key        | Description               |
 | ---------- | ------------------------- |
-| <leader>gq | show commits              |
-| <leader>gw | show commits with diff    |
-| <leader>ge | show branches             | 
-| <leader>gr | show git status           |
-| <leader>ga | show git stash            | 
+| \<leader\>gq | show commits              |
+| \<leader\>gw | show commits with diff    |
+| \<leader\>gb | show branches             | 
+| \<leader\>gr | show git status           |
+| \<leader\>ga | show git stash            | 
+| \<leader\>ge | git file tree             | 
 
 ### project telescope
 <table> <tr> <th> normal mode </th> <th> insert mode </th></tr>
@@ -94,30 +94,30 @@
 
 | key      | Description                       |
 | -------- | --------------------------------- |
-| Ctrl + d | delete project                    |
-| Ctrl + v | rename project                    |
-| Ctrl + a | create project                    |
-| Ctrl + s | search files in project           |
-| Ctrl + b | browse files in project           |
-| Ctrl + l | change directory to project       |
-| Ctrl + r | recently opened files in project  |
-| Ctrl + f | find file within project          |
+| \<C-d\>    | delete project                    |
+| \<C-v\>    | rename project                    |
+| \<C-a\>    | create project                    |
+| \<C-s\>    | search files in project           |
+| \<C-b\>    | browse files in project           |
+| \<C-l\>    | change directory to project       |
+| \<C-r\>    | recently opened files in project  |
+| \<C-f\>    | find file within project          |
 
 </td> </tr> </table>
 
 
 ## toggletrouble
-| key      | Description               |
-| -------- | ------------------------- |
-| Ctrl + f | show errors and warnings  |
+| key        | Description               |
+| ---------- | ------------------------- |
+| \<leader\>t  | show errors and warnings  |
 
 ## cmp
 Note, these require the cmp list view to be open to do anything!
 | key         | Description                                               |
 | ----------- | --------------------------------------------------------- |
-| Ctrl + b    | scroll docs up                                            |
-| Ctrl + f    | scroll docs down                                          |
-| Ctrl + e    | cancel cmp                                                |
+| \<C-b\>       | scroll docs up                                            |
+| \<C-f\>       | scroll docs down                                          |
+| \<C-e\>       | cancel cmp                                                |
 | Enter       | write selected suggestion (does nothing if not selected)  |
 | Tab         |scroll down through suggestion list                        |
 | Shift + Tab | scroll up through suggestion list                         |
@@ -125,22 +125,23 @@ Note, these require the cmp list view to be open to do anything!
 ## LSP 
 | key          |  Description           |
 | ------------ | ---------------------- |
-|  Leader + ca | go to declaration      |
-|  Leader + cs | go to definition       |
-|  Leader + cd | go to type definitions |
-|  Leader + cf | go to references       |
-|  Leader + cq | fix code action        |
-|  Leader + cQ | refactor code action   |
-|  Leader + cw | signature help         |
-|  Leader + ce | hover                  |
-|  Leader + cr | rename                 |
+|  \<leader\>ca  | go to definition       |
+|  \<leader\>ca  | go to declaration      |
+|  \<leader\>cs  | find references        |
+|  \<leader\>cd  | go to type definition  |
+|  \<leader\>cf  | go to implementation   |
+|  \<leader\>cq  | fix code action        |
+|  \<leader\>cQ  | refactor code action   |
+|  \<leader\>cw  | signature help         |
+|  \<leader\>ce  | hover                  |
+|  \<leader\>cr  | rename                 |
 
 ## snippets
 These require you to be inside a snippet!
 | key      | Description               |
 | -------- | ------------------------- |
-| Ctrl + j | jump to next entry        |
-| Ctrl + k | jump to previous entry    |
+| \<C-j\>    | jump to next entry        |
+| \<C-k\>    | jump to previous entry    |
 
 ## Leap
 | key      | Description                                            |

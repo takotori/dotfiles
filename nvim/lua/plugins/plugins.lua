@@ -1,3 +1,5 @@
+local Util = require("lazyvim.util")
+
 return {
   {
     "LazyVim/LazyVim",
@@ -87,10 +89,6 @@ return {
     end,
   },
   {
-    "echasnovski/mini.ai",
-    diabled = true,
-  },
-  {
     "rcarriga/nvim-notify",
     opts = {
       top_down = false,
@@ -171,173 +169,123 @@ return {
     "mg979/vim-visual-multi",
   },
   {
-    "rouge8/neotest-rust",
-  },
-  {
-    "Issafalcon/neotest-dotnet",
-  },
-  {
-    "andy-bell101/neotest-java",
-  },
-  {
-    "nvim-neotest/neotest-go",
-  },
-  {
-    "nvim-neotest/neotest-python",
-  },
-  {
-    "nvim-neotest/neotest",
-    dependencies = {
-      "rouge8/neotest-rust",
-      "Issafalcon/neotest-dotnet",
-      "andy-bell101/neotest-java",
-      "nvim-neotest/neotest-go",
-      "nvim-neotest/neotest-python",
-    },
-    opts = {
-      adapters = {
-        ["neotest-rust"] = {},
-        ["neotest-dotnet"] = {},
-        ["neotest-java"] = {},
-        ["neotest-go"] = {},
-        ["neotest-python"] = {},
-      },
-      status = { virtual_text = true },
-      output = { open_on_run = true },
-      quickfix = {
-        open = function()
-          if require("lazyvim.util").has("trouble.nvim") then
-            vim.cmd("Trouble quickfix")
-          else
-            vim.cmd("copen")
-          end
-        end,
-      },
-    },
-    config = function(_, opts)
-      local neotest_ns = vim.api.nvim_create_namespace("neotest")
-      vim.diagnostic.config({
-        virtual_text = {
-          format = function(diagnostic)
-            -- Replace newline and tab characters with space for more compact diagnostics
-            local message = diagnostic.message:gsub("\n", " "):gsub("\t", " "):gsub("%s+", " "):gsub("^%s+", "")
-            return message
-          end,
-        },
-      }, neotest_ns)
-
-      if opts.adapters then
-        local adapters = {}
-        for name, config in pairs(opts.adapters or {}) do
-          if type(name) == "number" then
-            if type(config) == "string" then
-              config = require(config)
-            end
-            adapters[#adapters + 1] = config
-          elseif config ~= false then
-            local adapter = require(name)
-            if type(config) == "table" and not vim.tbl_isempty(config) then
-              local meta = getmetatable(adapter)
-              if adapter.setup then
-                adapter.setup(config)
-              elseif meta and meta.__call then
-                adapter(config)
-              else
-                error("Adapter " .. name .. " does not support setup")
-              end
-            end
-            adapters[#adapters + 1] = adapter
-          end
-        end
-        opts.adapters = adapters
-      end
-
-      require("neotest").setup(opts)
-    end,
-  -- stylua: ignore
-  keys = {
-    { "<leader>tT", function() require("neotest").run.run(vim.fn.expand("%")) end, desc = "Run File" },
-    { "<leader>tt", function() require("neotest").run.run(vim.loop.cwd()) end, desc = "Run All Test Files" },
-    { "<leader>tr", function() require("neotest").run.run() end, desc = "Run Nearest" },
-    { "<leader>ts", function() require("neotest").summary.toggle() end, desc = "Toggle Summary" },
-    { "<leader>to", function() require("neotest").output.open({ enter = true, auto_close = true }) end, desc = "Show Output" },
-    { "<leader>tO", function() require("neotest").output_panel.toggle() end, desc = "Toggle Output Panel" },
-    { "<leader>tS", function() require("neotest").run.stop() end, desc = "Stop" },
-  },
-  },
-  {
-    "echasnovski/mini.hipatterns",
-    event = "BufReadPre",
-    opts = function()
-      local hi = require("mini.hipatterns")
-      return {
-        -- custom LazyVim option to enable the tailwind integration
-        tailwind = {
-          enabled = true,
-          ft = { "typescriptreact", "javascriptreact", "css", "javascript", "typescript", "html" },
-          -- full: the whole css class will be highlighted
-          -- compact: only the color will be highlighted
-          style = "full",
-        },
-        highlighters = {
-          hex_color = hi.gen_highlighter.hex_color({ priority = 2000 }),
-        },
-      }
-    end,
-    config = function(_, opts)
-      -- backward compatibility
-      if opts.tailwind == true then
-        opts.tailwind = {
-          enabled = true,
-          ft = { "typescriptreact", "javascriptreact", "css", "javascript", "typescript", "html" },
-          style = "full",
-        }
-      end
-      if type(opts.tailwind) == "table" and opts.tailwind.enabled then
-        -- reset hl groups when colorscheme changes
-        vim.api.nvim_create_autocmd("ColorScheme", {
-          callback = function()
-            M.hl = {}
-          end,
-        })
-        opts.highlighters.tailwind = {
-          pattern = function()
-            if not vim.tbl_contains(opts.tailwind.ft, vim.bo.filetype) then
-              return
-            end
-            if opts.tailwind.style == "full" then
-              return "%f[%w:-]()[%w:-]+%-[a-z%-]+%-%d+()%f[^%w:-]"
-            elseif opts.tailwind.style == "compact" then
-              return "%f[%w:-][%w:-]+%-()[a-z%-]+%-%d+()%f[^%w:-]"
-            end
-          end,
-          group = function(_, _, m)
-            ---@type string
-            local match = m.full_match
-            ---@type string, number
-            local color, shade = match:match("[%w-]+%-([a-z%-]+)%-(%d+)")
-            shade = tonumber(shade)
-            local bg = vim.tbl_get(M.colors, color, shade)
-            if bg then
-              local hl = "MiniHipatternsTailwind" .. color .. shade
-              if not M.hl[hl] then
-                M.hl[hl] = true
-                local bg_shade = shade == 500 and 950 or shade < 500 and 900 or 100
-                local fg = vim.tbl_get(M.colors, color, bg_shade)
-                vim.api.nvim_set_hl(0, hl, { bg = "#" .. bg, fg = "#" .. fg })
-              end
-              return hl
-            end
-          end,
-          priority = 2000,
-        }
-      end
-      require("mini.hipatterns").setup(opts)
-    end,
-  },
-  {
     "barreiroleo/ltex_extra.nvim",
     ft = { "markdown", "tex", "typst", "typ" },
     lazy = true,
+  },
+  {
+    "smjonas/inc-rename.nvim",
+    lazy = true,
+    event = "BufEnter",
+    config = function()
+      require("inc_rename").setup({
+        cmd_name = "IncRename", -- the name of the command
+        hl_group = "Substitute", -- the highlight group used for highlighting the identifier's new name
+        preview_empty_name = true, -- whether an empty new name should be previewed; if false the command preview will be cancelled instead
+        show_message = true, -- whether to display a `Renamed m instances in n files` message after a rename operation
+        input_buffer_type = nil, -- the type of the external input buffer to use (the only supported value is currently "dressing")
+        post_hook = nil, -- callback to run after renaming, receives the result table (from LSP handler) as an argument
+      })
+    end,
+  },
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    opts = {
+      window = {
+        position = "right",
+        mappings = {
+          ["l"] = "none",
+        },
+      },
+    },
+    keys = {
+      {
+        "<leader>fe",
+        function()
+          require("neo-tree.command").execute({ position = "right", toggle = true, dir = Util.root() })
+        end,
+        desc = "Explorer NeoTree (root dir)",
+      },
+      {
+        "<leader>fE",
+        function()
+          require("neo-tree.command").execute({ position = "right", toggle = true, dir = vim.loop.cwd() })
+        end,
+        desc = "Explorer NeoTree (cwd)",
+      },
+      { "<A-f>", "<leader>fe", desc = "Explorer NeoTree (root dir)", remap = true },
+      { "<A-F>", "<leader>fE", desc = "Explorer NeoTree (cwd)", remap = true },
+    },
+  },
+  {
+    "folke/edgy.nvim",
+    opts = {
+      animate = {
+        enabled = false,
+      },
+      left = {},
+      right = {
+        -- Neo-tree filesystem always takes half the screen height
+        {
+          title = "Neo-Tree",
+          ft = "neo-tree",
+          filter = function(buf)
+            return vim.b[buf].neo_tree_source == "filesystem"
+          end,
+          size = { height = 0.5 },
+        },
+        {
+          title = "Neo-Tree Git",
+          ft = "neo-tree",
+          filter = function(buf)
+            return vim.b[buf].neo_tree_source == "git_status"
+          end,
+          pinned = true,
+          open = "Neotree position=right git_status",
+        },
+        {
+          title = "Neo-Tree Buffers",
+          ft = "neo-tree",
+          filter = function(buf)
+            return vim.b[buf].neo_tree_source == "buffers"
+          end,
+          pinned = true,
+          open = "Neotree position=top buffers",
+        },
+        {
+          ft = "Outline",
+          pinned = true,
+          open = "SymbolsOutlineOpen",
+        },
+        -- any other neo-tree windows
+        "neo-tree",
+      },
+    },
+  },
+  {
+    "rcarriga/nvim-dap-ui",
+    keys = {
+      {
+        "<leader>dk",
+        function()
+          require("dap").down()
+        end,
+        desc = "Down",
+      },
+      {
+        "<leader>dl",
+        function()
+          require("dap").up()
+        end,
+        desc = "Up",
+      },
+      {
+        "<leader>d;",
+        function()
+          require("dap").run_last()
+        end,
+        desc = "Run Last",
+      },
+    },
   },
 }

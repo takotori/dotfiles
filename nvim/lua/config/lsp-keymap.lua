@@ -15,7 +15,7 @@ function M.get()
       { "<leader>cl", "<cmd>LspInfo<cr>", desc = "Lsp Info" },
       { "<leader>ca", "<cmd>Telescope lsp_definitions<cr>", desc = "Goto Definition", has = "definition" },
       { "<leader>cs", "<cmd>Telescope lsp_references<cr>", desc = "References" },
-      { "gD", vim.lsp.buf.declaration, desc = "Goto Declaration" },
+      { "<leader>cA", vim.lsp.buf.declaration, desc = "Goto Declaration" },
       { "<leader>cf", "<cmd>Telescope lsp_implementations<cr>", desc = "Goto Implementation" },
       { "<leader>cd", "<cmd>Telescope lsp_type_definitions<cr>", desc = "Goto Type Definition" },
       { "<leader>ce", vim.lsp.buf.hover, desc = "Hover" },
@@ -27,8 +27,8 @@ function M.get()
       { "[e", M.diagnostic_goto(false, "ERROR"), desc = "Prev Error" },
       { "]w", M.diagnostic_goto(true, "WARN"), desc = "Next Warning" },
       { "[w", M.diagnostic_goto(false, "WARN"), desc = "Prev Warning" },
-      { "<F4>", format, desc = "Format Document", has = "formatting" },
-      -- { "<leader>cf", format, desc = "Format Range", mode = "v", has = "documentRangeFormatting" },
+      { "<F4>", format, desc = "Format Range", mode = "v", has = "documentRangeFormatting" },
+      { "<leader>cr", ":IncRename ", desc = "Rename", has = "rename" },
       {
         "<leader>cq",
         function()
@@ -68,20 +68,6 @@ function M.get()
         has = "codeAction",
       },
     }
-    if require("lazyvim.util").has("inc-rename.nvim") then
-      M._keys[#M._keys + 1] = {
-        "<leader>cr",
-        function()
-          require("inc_rename")
-          return ":IncRename " .. vim.fn.expand("<cword>")
-        end,
-        expr = true,
-        desc = "Rename",
-        has = "rename",
-      }
-    else
-      M._keys[#M._keys + 1] = { "<leader>cr", vim.lsp.buf.rename, desc = "Rename", has = "rename" }
-    end
   end
   return M._keys
 end

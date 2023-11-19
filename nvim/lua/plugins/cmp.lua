@@ -106,7 +106,7 @@ return {
           { name = "crates" },
         }),
         sorting = {
-          priority_weight = 1,
+          priority_weight = 90,
           comparators = {
             compare.exact,
             compare.score,
