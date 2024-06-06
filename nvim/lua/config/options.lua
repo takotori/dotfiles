@@ -8,7 +8,6 @@ local options = {
   termguicolors = true,
   spelllang = "en_us",
   shell = "/usr/bin/fish",
-  autochdir = true,
   relativenumber = false,
   scrolloff = 5,
   scrolljump = 5,

@@ -23,6 +23,9 @@ map("v", "k", "j", opts)
 map("v", "l", "k", opts)
 map("v", ";", "l", opts)
 
+-- test plugin
+map("n", "<leader>OO", ':lua require("test_plugin").test()<CR>', { desc = "Toggle breakpoint" })
+
 -- debug
 map("n", "<leader>db", ':lua require("dap").toggle_breakpoint()<CR>', { desc = "Toggle breakpoint" })
 map("n", "<leader>do", ':lua require("dap").step_over()<CR>', { desc = "Step over" })
@@ -82,10 +85,10 @@ end, { desc = "gitui (root dir)" })
 map("n", "<leader>gG", function()
   Util.terminal({ "gitui" })
 end, { desc = "gitui (cwd)" })
-map("n", "<leader>gb", function()
+map("n", "<leader>gB", function()
   require("gitblame")
   vim.cmd(":GitBlameToggle")
-end, { desc = "gitui (cwd)" })
+end, { desc = "git blame" })
 
 -- harpoon man
 map("n", "<leader>h1", function()

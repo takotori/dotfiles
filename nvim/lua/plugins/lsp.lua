@@ -3,26 +3,13 @@ return {
     "neovim/nvim-lspconfig",
     ---@class PluginLspOpts
     opts = {
-      diagnostics = {
-        underline = true,
-        update_in_insert = false,
-        virtual_text = { spacing = 4, source = "if_many", prefix = "●" },
-        severity_sort = true,
-      },
       -- inlay_hints = {
       --   enabled = true,
       -- },
-      capabilities = {},
       format_notify = false,
-      format = {
-        formatting_options = nil,
-        timeout_ms = nil,
-      },
       -- LSP Server Settings
       ---@type lspconfig.options
       servers = {
-        cssls = {},
-        html = {},
         bashls = {},
         ansiblels = {},
         asm_lsp = {},
@@ -41,15 +28,12 @@ return {
           filetypes = {
             "bib",
             "gitcommit",
-            "markdown",
             "org",
             "plaintex",
             "rst",
             "rnoweb",
             "tex",
             "pandoc",
-            "typst",
-            "typ",
           },
         },
         sqlls = {},
@@ -83,16 +67,21 @@ return {
   },
   {
     "stevearc/conform.nvim",
-    opts = function()
-      local opts = {
-        formatters_by_ft = {
-          lua = { "stylua" },
-          fish = { "fish_indent" },
-          sh = { "shfmt" },
-          typst = { "typstfmt" },
+    opts = {
+      keys = {
+        {
+          -- Customize or remove this keymap to your liking
+          "<leader>cF",
+          function()
+            require("conform").format({ async = true, lsp_fallback = true })
+          end,
+          mode = "",
+          desc = "Format buffer",
         },
-      }
-      return opts
-    end,
+      },
+      formatters_by_ft = {
+        typst = { "typstfmt" },
+      },
+    },
   },
 }

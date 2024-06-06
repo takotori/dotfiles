@@ -40,6 +40,27 @@ local imageSnippet = s(
 )
 table.insert(snippets, imageSnippet)
 
+local figureSnippet = s(
+  "figure-",
+  fmt(
+    [[
+     #align(
+       center, [#figure(
+           img("{1}", width: {2}%, extension: "{3}"), caption: [{4}],
+         )<{5}>],
+     )
+    ]],
+    {
+      i(1, ""),
+      i(2, "100"),
+      i(3, "figures"),
+      i(4, ""),
+      i(5, ""),
+    }
+  )
+)
+table.insert(snippets, figureSnippet)
+
 local centerImageSnippet = s(
   "cimage-",
   fmt(
@@ -72,16 +93,13 @@ local codeSnippet = s(
   "code-",
   fmt(
     [[
-    //typstfmt::off
     ```{1}
     {2}
     ```
-    //typstfmt::on
-
     ]],
     {
-      i(1, "lang"),
-      i(2, "code"),
+      i(1, ""),
+      i(2, ""),
     }
   )
 )
@@ -94,30 +112,26 @@ local patternSnippet = s(
     #subsection([{1}])
     #set text(size: 14pt)
     
-    Problem | {2}
-    Context | {3} 
-    Participants :
-    - {4}
+    *Problem* | {2}\
+    *Solution* | {3}\
     #set text(size: 11pt)
-    // images
-    {5}
+    {4}
     
     #columns(2, [
       #text(green)[Benefits]
-      - {6}
+      - {5}
       #colbreak()
       #text(red)[Liabilities]
-      - {7}
+      - {6}
     ])
     ]],
     {
-      i(1, "pattern"),
-      i(2, "problem"),
-      i(3, "context"),
+      i(1, ""),
+      i(2, ""),
+      i(3, ""),
       i(4, ""),
       i(5, ""),
       i(6, ""),
-      i(7, ""),
     }
   )
 )

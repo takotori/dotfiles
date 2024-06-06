@@ -25,6 +25,7 @@ return {
   },
   {
     "hrsh7th/nvim-cmp",
+    version = false,
     event = "InsertEnter",
     dependencies = {
       "hrsh7th/cmp-nvim-lsp",
@@ -35,7 +36,9 @@ return {
       { "roobert/tailwindcss-colorizer-cmp.nvim", config = true },
     },
     opts = function()
+      vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
       local cmp = require("cmp")
+      local defaults = require("cmp.config.default")()
       local luasnip = require("luasnip")
       local compare = require("cmp.config.compare")
       return {
@@ -60,14 +63,14 @@ return {
           }), -- Accept cur
           ["<Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
-              cmp.select_next_item()
+              cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
             else
               fallback()
             end
           end, { "i", "s" }),
           ["<S-Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
-              cmp.select_prev_item()
+              cmp.select_prev_item({ behavior = cmp.SelectBehavior.Insert })
             else
               fallback()
             end
@@ -126,7 +129,7 @@ return {
         },
         experimental = {
           ghost_text = {
-            hl_group = "LspCodeLens",
+            hl_group = "CmpGhostText",
           },
         },
       }
@@ -138,3 +141,4 @@ return {
     end,
   },
 }
+
